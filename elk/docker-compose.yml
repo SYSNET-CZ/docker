@@ -104,11 +104,11 @@ services:
       - ./logstash/logs/:/usr/share/logstash/logs/
     ports:
       - "10514:10514"
-      networks:
-        elastic:
-          aliases:
-            - logstash
-            - syslog
+    networks:
+      elastic:
+        aliases:
+          - logstash
+          - syslog
     command: logstash -f /usr/share/logstash/config/logstash.conf
     depends_on:
       - "es01"
