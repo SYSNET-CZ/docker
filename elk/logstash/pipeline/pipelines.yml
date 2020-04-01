@@ -1,0 +1,5 @@
+# config/pipeline.yml
+#- pipeline.id: upstream
+#  config.string: input { stdin {} } output { pipeline { send_to => [myVirtualAddress] } }
+#- pipeline.id: downstream
+#  config.string: input { pipeline { address => myVirtualAddress } }
