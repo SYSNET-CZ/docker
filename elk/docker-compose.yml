@@ -11,7 +11,7 @@ services:
       - cluster.initial_master_nodes=es01,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
-      - 'path.repo=["/usr/share/elasticsearch/backup"]'
+      - "path.repo=/usr/share/elasticsearch/backup"
     ulimits:
       memlock:
         soft: -1
@@ -37,7 +37,7 @@ services:
       - cluster.initial_master_nodes=es01,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
-      - 'path.repo=["/usr/share/elasticsearch/backup"]'
+      - "path.repo=/usr/share/elasticsearch/backup"
     ulimits:
       memlock:
         soft: -1
@@ -61,7 +61,7 @@ services:
       - cluster.initial_master_nodes=es01,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
-      - 'path.repo=["/usr/share/elasticsearch/backup"]'
+      - "path.repo=/usr/share/elasticsearch/backup"
     ulimits:
       memlock:
         soft: -1
@@ -90,6 +90,26 @@ services:
         aliases:
           - kibana
           - kib
+    depends_on:
+      - "es01"
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${ELK_VERSION}
+    container_name: logstash
+    links:
+      - es01
+    volumes:
+      - ./logstash/pipeline/:/usr/share/logstash/pipeline/
+      - ./logstash/conf/:/usr/share/logstash/config/
+      - ./logstash/logs/:/usr/share/logstash/logs/
+    ports:
+      - "10514:10514"
+      networks:
+        elastic:
+          aliases:
+            - logstash
+            - syslog
+    command: logstash -f /usr/share/logstash/config/logstash.conf
     depends_on:
       - "es01"
 
