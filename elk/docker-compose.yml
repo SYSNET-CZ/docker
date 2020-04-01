@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
@@ -26,7 +26,6 @@ services:
         aliases:
           - es01
           - elasticsearch
-
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
     container_name: es02
@@ -51,7 +50,7 @@ services:
     aliases:
       - es02
       - elasticsearch2
-es03:
+  es03:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
     container_name: es03
     restart: always
@@ -87,7 +86,10 @@ es03:
     ports:
       - "127.0.0.1:5601:5601"
     networks:
-      - elastic
+      elastic:
+        aliases:
+          - kibana
+          - kib
     depends_on:
       - "es01"
 
