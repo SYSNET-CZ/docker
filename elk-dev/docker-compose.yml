@@ -3,6 +3,7 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
     container_name: elasticsearch
+    hostname: elasticsearch
     restart: always
     environment:
       - node.name=elasticsearch
@@ -30,12 +31,14 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:${ELK_VERSION}
     container_name: kibana
+    hostname: kibana
     restart: always
     volumes:
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml
     environment:
-      SERVER_NAME: ${SERVER_NAME}
-      ELASTICSEARCH_HOSTS: http://es01:9200
+      - TZ=Europe/Prague
+      - SERVER_NAME=${SERVER_NAME}
+      - ELASTICSEARCH_HOSTS=http://es01:9200
     ports:
       - "127.0.0.1:5601:5601"
     networks:
@@ -45,6 +48,26 @@ services:
           - kib
     depends_on:
       - "elasticsearch"
+
+  # APM Server
+  apm:
+    image: docker.elastic.co/apm/apm-server:${ELK_VERSION}
+    container_name: apm
+    hostname: apm
+    restart: always
+    networks:
+      elastic:
+        aliases:
+          - apm
+          - apm-server
+    environment:
+      - TZ=Europe/Prague
+    ports:
+      - "127.0.0.1:8200:8200"
+    volumes:
+      - ./apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
+    depends_on:
+      - elasticsearch
 
 volumes:
   data:
