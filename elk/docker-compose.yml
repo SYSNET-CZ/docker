@@ -113,6 +113,25 @@ services:
     depends_on:
       - "es01"
 
+  apm:
+    image: docker.elastic.co/apm/apm-server:${ELK_VERSION}
+    container_name: apm
+    restart: always
+    networks:
+      elastic:
+        aliases:
+          - apm
+          - apm-server
+    environment:
+      - TZ=Europe/Prague
+    ports:
+      - "127.0.0.1:8200:8200"
+    volumes:
+      - ./apm/conf/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
+    depends_on:
+      - es01
+      - kibana
+
 volumes:
   data01:
     driver: local
