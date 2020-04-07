@@ -1,0 +1,57 @@
+version: "3"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=sysnet-eap-dev
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      - "path.repo=/usr/share/elasticsearch/backup"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data:/usr/share/elasticsearch/data
+      - backup:/usr/share/elasticsearch/backup
+      - .:/apps
+    entrypoint: /apps/docker-entrypoint-es-plugins.sh
+    ports:
+      - "127.0.0.1:9200:9200"
+    networks:
+      elastic:
+        aliases:
+          - es01
+          - elasticsearch
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ELK_VERSION}
+    container_name: kibana
+    restart: always
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+    environment:
+      SERVER_NAME: ${SERVER_NAME}
+      ELASTICSEARCH_HOSTS: http://es01:9200
+    ports:
+      - "127.0.0.1:5601:5601"
+    networks:
+      elastic:
+        aliases:
+          - kibana
+          - kib
+    depends_on:
+      - "elasticsearch"
+
+volumes:
+  data:
+    driver: local
+  backup:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge

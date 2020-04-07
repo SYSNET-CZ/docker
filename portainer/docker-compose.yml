@@ -1,7 +1,6 @@
 version: "3"
 
 services:
-
   portainer:
     image: portainer/portainer
     container_name: portainer
@@ -13,7 +12,7 @@ services:
       - "127:0:0:1:8000:8000"
       - "127.0.0.1:9000:9000"
     environment:
-      - VIRTUAL_HOST=eap.sysnet.cz
+      - VIRTUAL_HOST=${SERVER_NAME}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - data:/data
