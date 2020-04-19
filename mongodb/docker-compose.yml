@@ -1,0 +1,35 @@
+﻿version: '3.1'
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      TZ: Europe/Prague
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Egalite1651.
+    volumes:
+      - data:/data
+
+# https://github.com/mongo-express/mongo-express
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      TZ: Europe/Prague
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: Egalite1651.
+      ME_CONFIG_OPTIONS_EDITORTHEME: cobalt
+      ME_CONFIG_MONGODB_SERVER: mongo
+    depends_on:
+      - mongo
+
+volumes:
+  data:
+    driver: local
