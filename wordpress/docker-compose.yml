@@ -1,0 +1,32 @@
+﻿version: '3.1'
+
+services:
+  wordpress:
+    image: wordpress
+    container_name: wordpress
+    restart: always
+    links:
+     - mariadb:mysql
+    environment:
+     - WORDPRESS_DB_PASSWORD=s3cr3t
+     - TZ=Europe/Prague
+    ports:
+     - "8088:80"
+    volumes:
+     - html:/var/www/html
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    restart: always
+    environment:
+     - MYSQL_ROOT_PASSWORD=s3cr3t
+     - MYSQL_DATABASE=wordpress
+     - TZ=Europe/Prague
+    volumes:
+     - mariadata:/var/lib/mysql
+
+volumes:
+  html:
+    driver: local
+  mariadata:
+    driver: local
