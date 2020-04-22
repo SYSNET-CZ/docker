@@ -1,0 +1,44 @@
+version: '3.1'
+
+services:
+  redmine:
+    image: redmine
+    container_name: redmine
+    restart: always
+    ports:
+      - 127.0.0.1:3000:3000
+    environment:
+      REDMINE_DB_MYSQL: db
+      REDMINE_DB_PASSWORD: ${DB_PASSWORD}
+    networks:
+      default:
+        aliases:
+          - redmine
+    volumes:
+      - files:/usr/src/redmine/files
+  db:
+    image: mysql:5.7
+    container_name: db
+    restart: always
+    ports:
+      - 127.0.0.1:3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: redmine
+    networks:
+      default:
+        aliases:
+          - db
+          - nysql
+    volumes:
+      - data:/var/lib/mysql
+
+volumes:
+  files:
+    driver: local
+  data:
+    driver: local
+
+networks:
+  default:
+    driver: bridge
