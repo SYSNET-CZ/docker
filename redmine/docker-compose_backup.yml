@@ -1,0 +1,66 @@
+version: '3.1'
+
+services:
+  redmine:
+    image: redmine
+    container_name: redmine
+    restart: always
+    ports:
+      - 127.0.0.1:3000:3000
+    environment:
+      REDMINE_DB_MYSQL: db
+      REDMINE_DB_PASSWORD: ${DB_PASSWORD}
+    networks:
+      default:
+        aliases:
+          - redmine
+    volumes:
+      - files:/usr/src/redmine/files
+  db:
+    image: mysql:5.7
+    container_name: db
+    restart: always
+    ports:
+      - 127.0.0.1:3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: redmine
+    networks:
+      default:
+        aliases:
+          - db
+          - nysql
+    volumes:
+      - data:/var/lib/mysql
+  db-backup:       # https://github.com/databacker/mysql-backup
+    image: databack/mysql-backup
+    container_name: db-backup
+    restart: always
+    volumes:
+      - dump:/db
+      - /path/to/pre-backup/scripts:/scripts.d/pre-backup
+      - /path/to/post-backup/scripts:/scripts.d/post-backup
+    environment:
+      - DB_DUMP_TARGET=/db
+      - DB_USER=root
+      - DB_PASS=${DB_PASSWORD}
+      - DB_DUMP_FREQ=60
+      - DB_DUMP_BEGIN=2330
+      - DB_SERVER=db
+    networks:
+      default:
+        aliases:
+          - db-backup
+          - backup
+
+volumes:
+  files:
+    driver: local
+  data:
+    driver: local
+  dump:
+    driver: local
+
+networks:
+  default:
+    driver: bridge
