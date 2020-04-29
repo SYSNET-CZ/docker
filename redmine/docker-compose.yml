@@ -4,6 +4,8 @@ services:
   redmine:
     image: sysnetcz/redmine:3
     container_name: redmine
+    depends_on:
+      - db
     restart: always
     ports:
       - 127.0.0.1:3000:3000
