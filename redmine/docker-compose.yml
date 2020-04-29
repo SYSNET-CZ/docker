@@ -8,6 +8,7 @@ services:
     ports:
       - 127.0.0.1:3000:3000
     environment:
+      MYSQL_PORT_3306_TCP: true
       REDMINE_DB_MYSQL: db
       REDMINE_DB_PASSWORD: ${DB_PASSWORD}
       REDMINE_DB_DATABASE: redmine
