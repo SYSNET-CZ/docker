@@ -1,6 +1,11 @@
 FROM ruby:2.2-slim
 
 ENV TZ Europe/Prague
+ENV DB_ADAPTER mysql2
+ENV DB_DATABASE redmine
+ENV DB_HOST db
+ENV DB_USER root
+ENV DB_PASS e3cr3t
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r redmine && useradd -r -g redmine redmine
@@ -82,6 +87,7 @@ RUN buildDeps=' \
 
 VOLUME /usr/src/redmine/files
 
+COPY database.yml /usr/src/redmine/config/database.yml
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
