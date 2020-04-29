@@ -80,7 +80,7 @@ RUN buildDeps=' \
 		bundle install --without development test; \
 	done
 
-VOLUME ["/usr/src/redmine/files", "/usr/src/redmine/plugins"]
+VOLUME /usr/src/redmine/files
 
 COPY docker-entrypoint.sh /
 RUN chmod +x /docker-entrypoint.sh
