@@ -82,9 +82,9 @@ RUN buildDeps=' \
 
 VOLUME /usr/src/redmine/files
 
-COPY docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
-ENTRYPOINT ["/docker-entrypoint.sh"]
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 3000
 CMD ["rails", "server", "-b", "0.0.0.0"]
