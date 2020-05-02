@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 # locales
-RUN apt-get install locales
+RUN apt-get install -y locales
 COPY locale.gen /etc/locale.gen
 RUN locale-gen
 COPY locale /etc/default/locale
