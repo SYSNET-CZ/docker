@@ -1,5 +1,7 @@
 FROM ruby:2.2-slim
 
+ARG HOME_DIR=/usr/src/redmine
+ENV REDMINE_HOME ${HOME_DIR}
 ENV TZ Europe/Prague
 ENV DB_ADAPTER mysql2
 ENV DB_DATABASE redmine
@@ -14,6 +16,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
 		wget \
 	&& rm -rf /var/lib/apt/lists/*
+
+# locales
+RUN apt-get install locales
+COPY locale.gen /etc/locale.gen
+RUN locale-gen
+COPY locale /etc/default/locale
+RUN export LANG=cs_CZ.UTF-8 && echo ': "${LANG:=cs_CZ.UTF-8}"; export LANG' >> /etc/profile
+
+# fulltext
+RUN apt-get install -y xapian-omega ruby-xapian libxapian-dev xpdf poppler-utils antiword unzip catdoc libwpd-tools \
+    libwps-tools gzip unrtf catdvi djview djview3 uuid uuid-dev xz-utils libemail-outlook-message-perl
+
+# AWS CLI
+RUN apt-get install -y python python-pip && pip install awscli && apt-get install -y xz-utils
 
 # grab gosu for easy step-down from root
 ENV GOSU_VERSION 1.7
@@ -53,7 +69,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV RAILS_ENV production
-WORKDIR /usr/src/redmine
+WORKDIR ${HOME_DIR}
 
 ENV REDMINE_VERSION 3.4.13
 ENV REDMINE_DOWNLOAD_MD5 5f17b35dfe73118067f63fb535332cfb
@@ -85,9 +101,11 @@ RUN buildDeps=' \
 		bundle install --without development test; \
 	done
 
-VOLUME /usr/src/redmine/files
+VOLUME ${HOME_DIR}/files
 
-COPY database.yml /usr/src/redmine/config/database.yml
+COPY database.yml ${HOME_DIR}/config/database.yml
+COPY init_plugins.sh ${HOME_DIR}/init_plugins.sh
+RUN chmod +x ${HOME_DIR}/init_plugins.sh
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
