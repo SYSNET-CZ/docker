@@ -21,6 +21,7 @@ services:
     volumes:
       - files:/usr/src/redmine/files
       - plugins:/usr/src/redmine/plugins
+      - logs:/usr/src/redmine/log
   db:
     image: mysql:5.7
     container_name: db
@@ -34,9 +35,10 @@ services:
       default:
         aliases:
           - db
-          - nysql
+          - mysql
     volumes:
       - data:/var/lib/mysql
+      - backup:/var/backups
 
 volumes:
   files:
@@ -45,6 +47,12 @@ volumes:
     driver: local
   data:
     driver: local
+  logs:
+    driver: local
+  backup:
+    driver: local
+
+
 
 networks:
   default:
