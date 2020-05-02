@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 # locales
-RUN apt-get install -y locales
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales locales-all
 COPY locale.gen /etc/locale.gen
 RUN locale-gen
 COPY locale /etc/default/locale
