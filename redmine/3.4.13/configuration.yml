@@ -1,0 +1,28 @@
+# = Redmine configuration file
+
+# default configuration options for all environments
+default:
+  email_delivery:
+    delivery_method: :async_smtp
+    async_smtp_settings:
+      enable_starttls_auto: true
+      address: smtp.gmail.com
+      port: 587
+      domain: smtp.gmail.com    # 'your.domain.com' for GoogleApps
+      authentication: :plain
+      user_name: sysnet.cz@gmail.com
+      password: SysN3et.C7
+
+  attachments_storage_path:
+  autologin_cookie_name:
+  autologin_cookie_path:
+  autologin_cookie_secure:
+  scm_subversion_command:
+  scm_mercurial_command:
+  scm_git_command:
+  scm_cvs_command:
+  scm_bazaar_command:
+  scm_darcs_command:
+  scm_stderr_log_file:
+  database_cipher_key:
+  rmagick_font_path:
