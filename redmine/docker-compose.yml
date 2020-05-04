@@ -40,6 +40,20 @@ services:
     volumes:
       - data:/var/lib/mysql
       - backup:/var/backups
+  smtp:
+    image: "catatnight/postfix"
+    container_name: smtp
+    restart: always
+    ports:
+      - "127.0.0.1:25:25"
+    environment:
+      - maildomain=sysnet.cz
+      - smtp_user=redmine:${DB_PASSWORD}
+    networks:
+      default:
+        aliases:
+          - mail
+          - smtp
 
 volumes:
   files:
