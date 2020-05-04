@@ -22,6 +22,7 @@ services:
       - files:/usr/src/redmine/files
       - plugins:/usr/src/redmine/plugins
       - logs:/usr/src/redmine/log
+      - ./configuration.yml:/usr/src/redmine/config/configuration.yml
   db:
     image: mysql:5.7
     container_name: db
