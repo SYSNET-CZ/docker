@@ -1,0 +1,31 @@
+version: '2'
+  services:
+    rancher-server:
+      image: rancher/server:stable
+      restart: unless-stopped
+      command: --db-host $DB_HOST --db-port $DB_PORT --db-name $DB_NAME --db-user $DB_USER --db-pass $DB_PASS
+      environment:
+        CATTLE_DB_LIQUIBASE_MYSQL_URL: $JDBC_URL
+        CATTLE_DB_CATTLE_MYSQL_URL: $JDBC_URL
+        CATTLE_DB_CATTLE_GO_PARAMS: "tls=true"
+      volumes:
+        - /path/to/mysql/ca.crt:/var/lib/rancher/etc/ssl/ca.crt
+      ports:
+        - "8080:8080"
+    db:
+      image: mysql:5.7
+      container_name: db
+      restart: always
+      ports:
+        - 127.0.0.1:3306:3306
+      environment:
+        MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        MYSQL_DATABASE: redmine
+      networks:
+        default:
+          aliases:
+            - db
+            - mysql
+      volumes:
+        - data:/var/lib/mysql
+        - backup:/var/backups
