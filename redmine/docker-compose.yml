@@ -43,10 +43,13 @@ services:
   db-backup:       # https://github.com/databacker/mysql-backup
     image: databack/mysql-backup
     container_name: db-backup
+    depends_on:
+      - db
     restart: always
     volumes:
       - dump:/db
     environment:
+      - TZ=Europe/Prague
       - DB_DUMP_TARGET=s3://${AWS_BUCKET}
       - DB_USER=root
       - DB_PASS=${DB_PASSWORD}
