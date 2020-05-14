@@ -6,12 +6,12 @@ default:
     delivery_method: :async_smtp
     async_smtp_settings:
       enable_starttls_auto: true
-      address: smtp.gmail.com
-      port: 587
-      domain: smtp.gmail.com    # 'your.domain.com' for GoogleApps
-      authentication: :plain
-      user_name: sysnet.cz@gmail.com
-      password: SysN3et.C7
+      address: out.virusfree.cz
+      port: 25
+      domain: sysnet.cz    # 'your.domain.com' for GoogleApps
+#      authentication: :plain
+#      user_name: sysnet.cz@gmail.com
+#      password: SysN3et.C7
 
   attachments_storage_path:
   autologin_cookie_name:
