@@ -40,6 +40,27 @@ services:
     volumes:
       - data:/var/lib/mysql
       - backup:/var/backups
+  db-backup:       # https://github.com/databacker/mysql-backup
+    image: databack/mysql-backup
+    container_name: db-backup
+    restart: always
+    volumes:
+      - dump:/db
+    environment:
+      - DB_DUMP_TARGET=s3://${AWS_BUCKET}
+      - DB_USER=root
+      - DB_PASS=${DB_PASSWORD}
+      - DB_DUMP_FREQ=1440
+      - DB_DUMP_BEGIN=2330
+      - DB_SERVER=db
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+    networks:
+      default:
+        aliases:
+          - db-backup
+          - backup
   smtp:
     image: "catatnight/postfix"
     container_name: smtp
@@ -66,6 +87,9 @@ volumes:
     driver: local
   backup:
     driver: local
+  dump:
+    driver: local
+
 
 
 networks:
