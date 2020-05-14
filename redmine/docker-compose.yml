@@ -64,6 +64,27 @@ services:
         aliases:
           - db-backup
           - backup
+  file-backup:
+    image: sysnetcz/s3sync
+    container_name: file-backup
+    depends_on:
+      - redmine
+    restart: always
+    volumes:
+      - files:/data:ro
+    environment:
+      - TZ=Europe/Prague
+      - CRON_SCHEDULE=${S3_SYNC_CRON}
+      - PARAMS=${S3_SYNC_PARAMS}
+      - BUCKET=${AWS_BUCKET}
+      - KEY=${AWS_ACCESS_KEY_ID}
+      - SECRET=${AWS_SECRET_ACCESS_KEY}
+      - REGION=${AWS_DEFAULT_REGION}
+    networks:
+      default:
+        aliases:
+          - file-backup
+          - s3sync
   smtp:
     image: "catatnight/postfix"
     container_name: smtp
