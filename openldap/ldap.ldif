@@ -1,0 +1,24 @@
+dn: uid=pepa.novak@sysnet.cz,ou=Users,dc=sysnet,dc=cz
+objectClass: inetOrgPerson
+cn: Pepa Novák
+sn: Novák
+uid: pepa.novak@sysnet.cz
+userPassword: 123
+mail: pepa.novak@sysnet.cz
+ou: Users
+
+dn: ou=AppRoles,dc=sysnet,dc=cz
+objectClass: organizationalunit
+ou: AppRoles
+description: AppRoles
+
+dn: ou=App1,ou=AppRoles,dc=sysnet,dc=cz
+objectClass: organizationalunit
+ou: App1
+description: App1
+
+dn: cn=traveler,ou=App1,ou=AppRoles,dc=sysnet,dc=cz
+objectClass: groupofnames
+cn: traveler
+description: traveler
+member: uid=pepa.novak@sysnet.cz,ou=Users,dc=sysnet,dc=cz

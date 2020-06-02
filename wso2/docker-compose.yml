@@ -1,0 +1,46 @@
+version: '3.3'
+
+volumes:
+  instance:
+    driver: local
+  repository:
+    driver: local
+
+networks:
+  default:
+    driver: bridge
+
+services:
+  ldap:
+    image: sysnetcz/apacheds
+    container_name: ldap
+    restart: always
+    environment:
+      - APACHEDS_VERSION=${DS_VERSION}
+      - APACHEDS_ARCH=${DS_ARCH}
+      - APACHEDS_ARCHIVE=apacheds-${DS_VERSION}-${DS_ARCH}.deb
+      - APACHEDS_PROGRAM_DIR=${DS_PROGRAM_DIR}
+      - APACHEDS_DATA_DIR=${DS_DATA_DIR}
+      - APACHEDS_USER=${DS_USER}
+      - APACHEDS_GROUP=${DS_GROUP}
+      - APACHEDS_INSTANCE=${DS_INSTANCE}
+      - APACHEDS_INSTANCE_DIR=${DS_INSTANCE_DIR}
+    volumes:
+      - instance:${DS_INSTANCE_DIR}
+    ports:
+      - "11389:10389"
+    networks:
+      - default
+  is:
+    image: wso2/wso2is:5.10.0
+    container_name: is
+    restart: always
+    volumes:
+      - repository:/home/wso2carbon/wso2is-5.10.0/repository
+    ports:
+      - "9443:9443"
+    networks:
+      - default
+
+
+

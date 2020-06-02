@@ -12,6 +12,86 @@ networks:
     driver: bridge
 
 services:
+  hydra-client:
+    image: oryd/hydra:v1.4.10
+    container_name: hydra-client
+    environment:
+      HYDRA_ADMIN_URL: http://hydra:4445
+      LOG_LEVEL: trace
+    command:
+      - clients
+      - create
+      - --skip-tls-verify
+      - --id
+      - test-client
+      - --secret
+      - test-secret
+      - --response-types
+      - id_token,token,"id_token token"
+      - --grant-types
+      - implicit
+      - --scope
+      - openid,profile,email
+      - --callbacks
+      - http://localhost:3000
+      - --post-logout-callbacks
+      - http://localhost:3000/post-logout-callback
+    networks:
+      default:
+        aliases:
+          - hydra-client
+    restart: always
+    depends_on:
+      - hydra
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://hydra:4445"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+  hydra:
+    image: oryd/hydra:v1.4.10
+    container_name: hydra
+    environment:
+      URLS_SELF_ISSUER: http://localhost:4444
+      URLS_SELF_PUBLIC: http://localhost:4444
+      URLS_LOGIN: http://localhost:8080/auth/login
+      URLS_CONSENT: http://localhost:8080/auth/consent
+      URLS_LOGOUT: http://localhost:8080/auth/logout
+      WEBFINGER_OIDC_DISCOVERY_SUPPORTED_SCOPES: profile,email,phone
+      WEBFINGER_OIDC_DISCOVERY_SUPPORTED_CLAIMS: name,family_name,given_name,nickname,email,phone_number
+      DSN: memory
+      LOG_LEVEL: trace
+    command: serve all --dangerous-force-http
+    networks:
+      default:
+        aliases:
+          - hydra
+          - oauth
+    ports:
+      - "4444:4444"
+      - "4445:4445"
+    restart: always
+    depends_on:
+      - werther
+  werther:
+    image: icoreru/werther
+    container_name: werther
+    environment:
+      WERTHER_IDENTP_HYDRA_URL: http://hydra:4445
+      WERTHER_LDAP_ENDPOINTS: ldap:389
+      WERTHER_LDAP_BINDDN: cn=admin,dc=sysnet,dc=cz
+      WERTHER_LDAP_BINDPW: admin
+      WERTHER_LDAP_BASEDN: "dc=sysnet,dc=cz"
+      WERTHER_LDAP_ROLE_BASEDN: "ou=AppRoles,dc=sysnet,dc=cz"
+    networks:
+      default:
+        aliases:
+          - werther
+    ports:
+      - "8082:8080"
+    restart: always
+    depends_on:
+      - ldap
   ldap:
     image: osixia/openldap:latest
     container_name: ldap
