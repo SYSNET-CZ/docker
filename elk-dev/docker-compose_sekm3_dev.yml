@@ -2,74 +2,83 @@ version: '3'
 services:
   elasticsearch:
     image: 'docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}'
-    container_name: elasticsearch
-    hostname: elasticsearch
+    container_name: elasticsearch-sekm
+    hostname: elasticsearch-sekm
     restart: always
     environment:
-      - node.name=elasticsearch
-      - cluster.name=sysnet-eap-dev
+      - TZ=Europe/Prague
+      - node.name=011kCmL
+      - cluster.name=sekm3-dev
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - ES_JAVA_OPTS=-Xms${HEAP_SIZE} -Xmx${HEAP_SIZE}
       - path.repo=/usr/share/elasticsearch/backup
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
-      - 'data:/usr/share/elasticsearch/data'
+      - '/home/docker/elasticsearch/data:/usr/share/elasticsearch/data'
+      - 'log_elastic:/var/log/'
       - 'backup:/usr/share/elasticsearch/backup'
-      - '.:/apps'
     ports:
-      - '127.0.0.1:9200:9200'
+      - '9200:9200'
+      - '9300:9300'
     networks:
       elastic:
         aliases:
           - es01
           - elasticsearch
+          - elasticsearch-sekm
   kibana:
     image: 'docker.elastic.co/kibana/kibana:${ELK_VERSION}'
-    container_name: kibana
-    hostname: kibana
+    container_name: kibana-sekm
+    hostname: kibana-sekm
     restart: always
     volumes:
-      - './kibana.yml:/usr/share/kibana/config/kibana.yml'
+      - '/home/docker/elk/conf/kibana.yml:/usr/share/kibana/config/kibana.yml:ro'
+      - 'log_kibana:/var/log/'
     environment:
       - TZ=Europe/Prague
       - 'SERVER_NAME=${SERVER_NAME}'
       - 'ELASTICSEARCH_HOSTS=http://elasticsearch:9200'
     ports:
-      - '127.0.0.1:5601:5601'
+      - '5601:5601'
     networks:
       elastic:
         aliases:
           - kibana
           - kib
+          - kibana-sekm
     depends_on:
       - elasticsearch
   apm:
     image: 'docker.elastic.co/apm/apm-server:${ELK_VERSION}'
-    container_name: apm
-    hostname: apm
+    container_name: apm-sekm
+    hostname: apm-sekm
     restart: always
     networks:
       elastic:
         aliases:
           - apm
           - apm-server
+          - apm-sekm
     environment:
       - TZ=Europe/Prague
     ports:
-      - '127.0.0.1:8200:8200'
+      - '8200:8200'
     volumes:
-      - './apm-server.yml:/usr/share/apm-server/apm-server.yml:ro'
+      - '/home/docker/elk/conf/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro'
     depends_on:
       - elasticsearch
 volumes:
-  data:
-    driver: local
   backup:
+    driver: local
+  log_elastic:
+    driver: local
+  log_kibana:
     driver: local
 networks:
   elastic:
-    driver: bridge
+    external:
+      name: sekm-net

@@ -1,6 +1,6 @@
 server.host: "0.0.0.0"
-server.basePath: "/kibana"
-server.name: "eap.sysnet.cz"
-elasticsearch.hosts: ["http://es01:9200"]
-server.cors: true
-server.cors.origin: ["*"]
+# server.basePath: "/kibana"
+server.name: "raptor.sysnet.cz"
+elasticsearch.hosts: ["http://elasticsearch:9200"]
+# server.cors: true
+# server.cors.origin: ["*"]

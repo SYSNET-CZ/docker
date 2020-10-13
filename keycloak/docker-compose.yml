@@ -1,0 +1,49 @@
+version: '3'
+
+volumes:
+  postgres_data:
+      driver: local
+
+networks:
+  default:
+    driver: bridge
+
+services:
+  postgres:
+      image: postgres
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      networks:
+        default:
+          aliases:
+            - postgres
+            - db
+      environment:
+        POSTGRES_DB: ${PG_DB}
+        POSTGRES_USER: ${PG_USER}
+        POSTGRES_PASSWORD: ${PG_PASSWD}
+        TZ: Europe/Prague
+
+  keycloak:
+      image: quay.io/keycloak/keycloak:latest
+      networks:
+        default:
+          aliases:
+            - keycloak
+            - iam
+      environment:
+        DB_VENDOR: POSTGRES
+        DB_ADDR: postgres
+        DB_DATABASE: ${PG_DB}
+        DB_USER: ${PG_USER}
+        DB_SCHEMA: public
+        DB_PASSWORD: ${PG_PASSWD}
+        KEYCLOAK_USER: ${KC_USER}
+        KEYCLOAK_PASSWORD: ${KC_PASSWD}
+        TZ: Europe/Prague
+        # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+        #JDBC_PARAMS: "ssl=true"
+      ports:
+        - 8080:8080
+      depends_on:
+        - postgres
