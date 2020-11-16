@@ -61,8 +61,8 @@ services:
       - TZ=Europe/Prague
     ports:
       - '127.0.0.1:8200:8200'
-    volumes:
-      - './apm-server.yml:/usr/share/apm-server/apm-server.yml:ro'
+#    volumes:
+#      - './apm-server.yml:/usr/share/apm-server/apm-server.yml:ro'
     depends_on:
       - elasticsearch
 volumes:
