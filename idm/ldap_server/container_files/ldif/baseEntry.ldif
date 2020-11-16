@@ -1,0 +1,9 @@
+dn: ou=groups,dc=sysnet,dc=cz
+objectClass: top
+objectClass: organizationalUnit
+ou: groups
+
+dn: ou=people,dc=sysnet,dc=cz
+objectClass: top
+objectClass: organizationalUnit
+ou: people
