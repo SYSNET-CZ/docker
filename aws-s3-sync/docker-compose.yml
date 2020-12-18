@@ -1,0 +1,32 @@
+version: '3'
+
+volumes:
+  files:
+    driver: local
+
+networks:
+  default:
+    driver: bridge
+
+services:
+  s3sync:
+    build: .
+    container_name: s3sync
+    environment:
+      - TZ=Europe/Prague
+      - ACCESS_KEY=${AWS_ACCESS_KEY_ID}
+      - SECRET_KEY=${AWS_SECRET_ACCESS_KEY}
+      - CRON_SCHEDULE=${S3_SYNC_CRON}
+      - SOURCE_PATH=${AWS_S3_SOURCE_PATH}
+      - DESTINATION_PATH=${AWS_S3_DESTINATION_PATH}
+      - BUCKET_LOCATION=${AWS_DEFAULT_REGION}
+      - LOGENTRIES_KEY=${AWS_S3_LOGENTRIES_KEY}
+      - S3SYNC_ARGS=${S3_SYNC_PARAMS}
+    restart: always
+    volumes:
+      - files:/files:ro
+    networks:
+      default:
+        aliases:
+          - file-backup
+          - s3sync
