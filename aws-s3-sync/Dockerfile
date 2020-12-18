@@ -2,6 +2,7 @@ FROM alpine:3.8
 
 RUN apk update \
     && apk add python py-pip rsyslog rsyslog-tls ca-certificates openssl \
+    && pip install --upgrade pip \
     && pip install awscli
 
 COPY run.py /run.py

@@ -65,21 +65,21 @@ services:
           - db-backup
           - backup
   file-backup:
-    image: sysnetcz/s3sync
+    image: sysnetcz/aws-s3-sync:1.0.0
     container_name: file-backup
-    depends_on:
-      - redmine
     restart: always
     volumes:
-      - files:/data:ro
+      - files:/files:ro
     environment:
       - TZ=Europe/Prague
-      - CRON_SCHEDULE=${S3_SYNC_CRON}
-      - PARAMS=${S3_SYNC_PARAMS}
-      - BUCKET=${AWS_BUCKET}
-      - KEY=${AWS_ACCESS_KEY_ID}
-      - SECRET=${AWS_SECRET_ACCESS_KEY}
-      - REGION=${AWS_DEFAULT_REGION}
+      - ACCESS_KEY=${AWS_ACCESS_KEY_ID}
+      - SECRET_KEY=${AWS_SECRET_ACCESS_KEY}
+      - CRON_SCHEDULE=${AWS_S3_SYNC_CRON}
+      - SOURCE_PATH=${AWS_S3_SOURCE_PATH}
+      - DESTINATION_PATH=s3://${AWS_BUCKET_FILES}
+      - BUCKET_LOCATION=${AWS_DEFAULT_REGION}
+      - LOGENTRIES_KEY=${AWS_S3_LOGENTRIES_KEY}
+      - S3SYNC_ARGS=${S3_SYNC_PARAMS}
     networks:
       default:
         aliases:
