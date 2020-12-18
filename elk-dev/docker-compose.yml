@@ -65,6 +65,24 @@ services:
 #      - './apm-server.yml:/usr/share/apm-server/apm-server.yml:ro'
     depends_on:
       - elasticsearch
+  metricbeat:
+    image: 'docker.elastic.co/beats/metricbeat:${ELK_VERSION}'
+    container_name: metricbeat
+    hostname: metricbeat
+    restart: always
+    networks:
+      elastic:
+        aliases:
+          - metricbeat
+    environment:
+      - TZ=Europe/Prague
+      - output.elasticsearch.hosts=["elasticsearch:9200"]
+#    volumes:
+#        './metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro'
+    depends_on:
+      - elasticsearch
+
+
 volumes:
   data:
     driver: local
