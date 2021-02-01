@@ -6,11 +6,12 @@ services:
     hostname: elasticsearch
     restart: always
     environment:
+      - TZ=Europe/Prague
       - node.name=elasticsearch
       - cluster.name=sysnet-eap-dev
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      - ES_JAVA_OPTS=-Xms4096m -Xmx4096m
       - path.repo=/usr/share/elasticsearch/backup
     ulimits:
       memlock:
@@ -78,7 +79,7 @@ services:
       - TZ=Europe/Prague
       - output.elasticsearch.hosts=["elasticsearch:9200"]
 #    volumes:
-#        './metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro'
+#      - './metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro'
     depends_on:
       - elasticsearch
 
