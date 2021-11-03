@@ -1,10 +1,10 @@
 ﻿version: '3.1'
 
 services:
-  mongo:
+  mongo-db:
     image: mongo
-    container_name: mongo
-    restart: always
+    container_name: mongo-db
+    restart: unless-stopped
     ports:
       - "27017:27017"
     environment:
@@ -18,7 +18,7 @@ services:
   mongo-express:
     image: mongo-express
     container_name: mongo-express
-    restart: always
+    restart: unless-stopped
     ports:
       - 8081:8081
     environment:
@@ -28,7 +28,7 @@ services:
       ME_CONFIG_OPTIONS_EDITORTHEME: cobalt
       ME_CONFIG_MONGODB_SERVER: mongo
     depends_on:
-      - mongo
+      - mongo-db
 
 volumes:
   data:
