@@ -1,0 +1,54 @@
+version: "3"
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  data:
+    driver: local
+
+services:
+  db:
+    image: library/mariadb
+    container_name: ca_db
+    environment:
+      MYSQL_ROOT_PASSWORD: foo123
+      MYSQL_DATABASE: ejbca
+      MYSQL_USER: ejbca
+      MYSQL_PASSWORD: ejbca
+      LANG: C.UTF_8  # this one should be added
+      TZ: Europe/Prague
+    restart: always
+    volumes:
+      - data:/var/lib/mysql"
+    command: --character-set-server=utf8 --collation-server=utf8_bin
+    networks:
+      default:
+        aliases:
+          - db
+          - ejbca-database
+          - mysql
+          - mariadb
+  ca:
+    image: primekey/ejbca-ce
+    container_name: ca
+    environment:
+      DATABASE_JDBC_URL: jdbc:mysql://db:3306/ejbca?characterEncoding=UTF-8
+      DATABASE_USER: ejbca
+      DATABASE_PASSWORD: ejbca
+      PROXY_AJP_BIND: 0.0.0.0
+      TZ: Europe/Prague
+    restart: always
+    ports:
+      - 8081:4447
+      - 80:8080
+      - 443:8443
+    depends_on:
+      - db
+    networks:
+      default:
+        aliases:
+          - ca
+          - ejbca
+          - node
