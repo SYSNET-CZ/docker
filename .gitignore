@@ -108,3 +108,7 @@ pip-selfcheck.json
 *.p12
 *.pfx
 *.jks
+
+# lokální konfigurace (vzor: template.env)
+elk/.env
+elk-dev/.env
