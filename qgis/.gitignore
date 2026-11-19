@@ -9,3 +9,9 @@
 
 .env
 
+
+# lokální kopie z *.example (ADR 008)
+
+elk/.env
+elk-dev/.env
+.env.windows

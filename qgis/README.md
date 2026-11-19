@@ -43,9 +43,10 @@ You can execute same commands as Linux part given above if you use `make` (optio
 Or in command powershell execute:
 
 ```
+copy .env.windows.example .env.windows
 docker-compose --env-file .env.windows up
 ```
-Or if you want to test specific version, you can edit .env.windows and change (here last 3.3.x version):
+`.env.windows` is a local copy (not versioned, see `.gitignore`). Or if you want to test specific version, you can edit it and change (here last 3.3.x version):
 
 ```
 LIZMAP_VERSION_TAG=3.3
